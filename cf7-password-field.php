@@ -45,7 +45,10 @@ function wpcf7_password_shortcode_handler( $tag ) {
     $atts = wpcf7_format_atts( $atts );
 
     $html = sprintf(
-        '<span class="wpcf7-form-control-wrap %1$s"><input %2$s />%3$s</span><div id="passwordStrength"></div>',
+        '<span class="wpcf7-form-control-wrap %1$s"><input %2$s />%3$s</span><div id="passwordStrength" class="passwordStrength">Password Strength: <span></span></div>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>',
         sanitize_html_class( $tag->name ), $atts, $validation_error );
 
     return $html;
@@ -130,3 +133,7 @@ function wpcf7_password_enqueue_scripts() {
 
 add_action( 'wp_enqueue_scripts', 'wpcf7_password_enqueue_scripts' );
 
+function custom_wpcf7_stylesheet() {
+    wp_enqueue_style( 'wpcf7-password-style', plugins_url( '/wpcf7-password-style.css', __FILE__ ));
+}
+add_action( 'wp_enqueue_scripts', 'custom_wpcf7_stylesheet' );
