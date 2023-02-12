@@ -1,58 +1,22 @@
 <?php
 /*
-Plugin Name: Contact Form 7 Custom Password Field
-Description: Adds a custom password field to Contact Form 7
-Version: 1.0
-Author: Arafat Rahman
+Plugin Name: Secure Password Field for Contact Form 7
+Description: This plugin adds a secure password field to Contact Form 7, making it easy to add password fields to your forms and improve the security of your website. Compatible with Contact Form 7 and fully customizable.
+Version: 1.0.0
+Author: AR Riyad 
+Author URI:  https://github.com/arafatrahman
 */
 
-add_action( 'wpcf7_init', 'wpcf7_add_shortcode_password' );
 
-function wpcf7_add_shortcode_password() {
-    wpcf7_add_shortcode( 'password', 'wpcf7_password_shortcode_handler' );
+define( 'CF7_PASSWORD_FIELD_ASSETS', plugin_dir_url( __FILE__ ) . 'admin/assets/');
+
+
+function cf7_password_field_plugin_load(){
+    require_once( plugin_dir_path( __FILE__ ) . 'admin/cf7-password-field-admin.php' );
 }
 
-function wpcf7_password_shortcode_handler( $tag ) {
+add_action('plugins_loaded', 'cf7_password_field_plugin_load');
 
-    $validation_error = wpcf7_get_validation_error( $tag->name );
-
-    $class = wpcf7_form_controls_class( $tag->type );
-
-    if ( $validation_error ) {
-        $class .= ' wpcf7-not-valid';
-    }
-
-    $atts = array();
-
-    $atts['size'] = $tag->get_size_option( '40' );
-    $atts['maxlength'] = $tag->get_maxlength_option();
-    $atts['minlength'] = $tag->get_minlength_option();
-
-    if ( $atts['maxlength'] && $atts['minlength'] && $atts['maxlength'] < $atts['minlength'] ) {
-        unset( $atts['maxlength'], $atts['minlength'] );
-    }
-
-    $atts['class'] = $tag->get_class_option( $class );
-    $atts['id'] = 'mypassword';
-    $atts['tabindex'] = $tag->get_option( 'tabindex', 'int', true );
-
-    $atts['type'] = 'password';
-    $atts['name'] = 'your-password';
-    $atts['value'] = ' ';
-    $atts['autocomplete'] = 'off';
-    $atts['onkeyup'] = 'cf7checkPasswordStrength()';
-
-    $atts = wpcf7_format_atts( $atts );
-
-    $html = sprintf(
-        '<span class="wpcf7-form-control-wrap %1$s"><input %2$s />%3$s</span><div id="passwordStrength" class="passwordStrength">Password Strength: <span></span></div>
-        <div class="progress">
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>',
-        sanitize_html_class( $tag->name ), $atts, $validation_error );
-
-    return $html;
-}
 
 add_action( 'wpcf7_admin_init', 'wpcf7_add_tag_generator_password', 55 );
 
@@ -123,17 +87,3 @@ function wpcf7_tag_generator_password( $contact_form, $args = '' ) {
     </div>
 <?php
 }
-
-
-// Register and enqueue the password strength meter script
-function wpcf7_password_enqueue_scripts() {
-    wp_register_script( 'wpcf7-password-strength-meter', plugins_url( '/wpcf7-password.js', __FILE__ ), array( 'jquery' ), '1.0', true );
-    wp_enqueue_script( 'wpcf7-password-strength-meter' );
-}
-
-add_action( 'wp_enqueue_scripts', 'wpcf7_password_enqueue_scripts' );
-
-function custom_wpcf7_stylesheet() {
-    wp_enqueue_style( 'wpcf7-password-style', plugins_url( '/wpcf7-password-style.css', __FILE__ ));
-}
-add_action( 'wp_enqueue_scripts', 'custom_wpcf7_stylesheet' );
