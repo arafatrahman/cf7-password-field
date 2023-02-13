@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Secure Password Field for Contact Form 7
+Plugin Name: Secure Password Field for CF7
 Description: This plugin adds a secure password field to Contact Form 7, making it easy to add password fields to your forms and improve the security of your website. Compatible with Contact Form 7 and fully customizable.
 Version: 1.0.0
 Author: AR Riyad 
